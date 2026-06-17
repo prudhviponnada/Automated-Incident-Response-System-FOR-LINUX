@@ -1,0 +1,16 @@
+services:
+  node-a:
+    image: nginx:alpine
+    container_name: healthy_router
+    ports:
+      - "8081:80"
+  
+  node-b:
+    image: nginx:alpine
+    container_name: failing_router
+    ports:
+      - "8082:80"
+    cap_add:
+      - NET_ADMIN
+    # This line installs the tools automatically, then starts the Nginx server
+    command: /bin/sh -c "apk add --no-cache iproute2 iproute2-tc && nginx -g 'daemon off;'"

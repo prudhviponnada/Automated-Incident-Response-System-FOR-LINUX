@@ -1,0 +1,18 @@
+---
+- name: Automated Web Service Repair
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Restoring default Nginx config to {{ target_node }}"
+      command: >
+        docker exec {{ target_node }} sh -c
+        "echo 'events {} http { server { listen 80; location / { return 200 \"OK\"; } } }' > /etc/nginx/nginx.conf"
+      
+    - name: "Reloading Nginx service on {{ target_node }}"
+      command: docker exec {{ target_node }} nginx -s reload
+      register: app_result
+
+    - name: "Verify Application Remediation"
+      debug:
+        msg: "Application config restored for {{ target_node }}. Output: {{ app_result.stdout | default('Success') }}"

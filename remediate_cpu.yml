@@ -1,0 +1,13 @@
+---
+- name: Automated Resource Exhaustion Repair
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Force restarting locked container: {{ target_node }}"
+      command: docker restart {{ target_node }}
+      register: cpu_result
+
+    - name: "Verify CPU Remediation"
+      debug:
+        msg: "Container rebooted. CPU levels normalizing for {{ target_node }}. Output: {{ cpu_result.stdout | default('Success') }}"

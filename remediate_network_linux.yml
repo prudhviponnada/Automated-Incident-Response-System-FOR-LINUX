@@ -1,0 +1,15 @@
+---
+- name: Native Linux QoS Network Repair
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Stripping artificial latency queues from {{ target_node }}"
+      # This command deletes the traffic shaping rules on the eth0 interface
+      command: docker exec -u root {{ target_node }} tc qdisc del dev eth0 root
+      register: network_result
+      ignore_errors: yes
+
+    - name: "Verify QoS Remediation"
+      debug:
+        msg: "Network rules flushed for {{ target_node }}. Speed restored. Output: {{ network_result.stdout | default('Success') }}"

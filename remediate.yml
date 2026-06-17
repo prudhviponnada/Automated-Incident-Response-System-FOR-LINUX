@@ -1,0 +1,13 @@
+---
+- name: Automated NOC Remediation
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Attempting automated restart of node: {{ target_node }}"
+      command: docker start {{ target_node }}
+      register: remediation_result
+
+    - name: "Verify Remediation Status"
+      debug:
+        msg: "Successfully started node. Output: {{ remediation_result.stdout }}"
